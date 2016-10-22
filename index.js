@@ -6,15 +6,15 @@ var types = require('./lib/types')
 var _ = require('lodash')
 
 sendNewTorrents()
-setInterval(sendNewTorrents, 3600000) // 1h 3600000
+setInterval(sendNewTorrents, 60 * 60 * 1000) // 1h 3600000
 
 var lastUpdate;
 function sendNewTorrents() {
   console.log("BUSCANDO NUEVOS TORRENTS")
   tracker
       .latest()
-      .then((result)=>{
-        result.forEach((info) => {
+      .then(result => {
+        result.forEach(info => {
           if(filter(info)) {
             console.log("Enviando: " + info.title)
             telegram.sendTorrentInfo(info)
@@ -30,11 +30,7 @@ function sendNewTorrents() {
 function filter(info) {
   // if(types.SHOW === info.type)
   //   return false
-
-  if(lastUpdate && info.date < lastUpdate)
-    return false
-
-  return true
+  return (lastUpdate && info.date < lastUpdate)
 }
 
 telegram.onRequestAddTorrent = function(msg) {
