@@ -1,6 +1,6 @@
-var config   = require('./config')
-var telegram = require('./lib/gateways/telegram')(config.telegram)
-var seedbox  = require('./lib/seedboxs/transmission')(config.transmission)
+//var config   = require('./config')
+//var telegram = require('./lib/gateways/telegram')(config.telegram)
+//var seedbox  = require('./lib/seedboxs/transmission')(config.transmission)
 var tracker  = require('./lib/trackers/elitetorrent')
 var types    = require('./lib/types')
 var _ = require('lodash')
@@ -17,7 +17,7 @@ function sendNewTorrents() {
     result.forEach(info => {
       if(filter(info)) {
         console.log("Enviando: " + info.title)
-        telegram.sendTorrentInfo(info)
+        //telegram.sendTorrentInfo(info)
       } else {
         console.log(info.title + ' no ha pasado el filtro')
       }
