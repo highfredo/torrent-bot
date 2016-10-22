@@ -17,7 +17,7 @@ function sendNewTorrents() {
     result.forEach(info => {
       if(!isOld(info)) {
         console.log("Enviando: " + info.title)
-        //telegram.sendTorrentInfo(info)
+        telegram.sendTorrentInfo(info)
       } else {
         console.log(info.title + ' no ha pasado el filtro')
       }
@@ -35,8 +35,6 @@ function isOld(info) {
 telegram.onRequestAddTorrent = function(msg) {
   tracker.decodeMagnet(msg.data).then((magnet)=>{
     console.log("Added: " + msg.data)
-    seedbox.addMagnet(magnet).then(videoUrl => {
-      telegram.sendMessage(msg.from.id, videoUrl);
-    });
+    seedbox.addMagnet(magnet)
   })
 }
