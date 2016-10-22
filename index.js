@@ -1,7 +1,8 @@
 var config = require('./config')
+
 var telegram = require('./lib/gateways/telegram')(config.telegram)
-var seedbox = require('./lib/seedboxs/transmission')(config.transmission)
-var tracker = require('./lib/trackers/elitetorrent')
+var seedbox = require('./lib/seedboxs/' + config.defaults.seedbox)(config[config.defaults.seedbox])
+var tracker = require('./lib/trackers/'  + config.defaults.tracker)
 var types = require('./lib/types')
 var _ = require('lodash')
 
@@ -30,7 +31,11 @@ function sendNewTorrents() {
 function filter(info) {
   // if(types.SHOW === info.type)
   //   return false
-  return (lastUpdate && info.date < lastUpdate)
+
+  if(lastUpdate && info.date < lastUpdate)
+    return false
+
+  return true
 }
 
 telegram.onRequestAddTorrent = function(msg) {

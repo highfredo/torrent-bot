@@ -4,6 +4,10 @@
 
 module.exports =
 {
+    defaults: {
+        seedbox: 'transmission',
+        tracker: 'elitetorrent'
+    },
     transmission: {
         user: "<transmission user>",
         pass: "<transmission pass>",
