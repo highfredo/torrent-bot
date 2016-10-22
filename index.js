@@ -15,7 +15,7 @@ function sendNewTorrents() {
   tracker.latest()
   .then(result => {
     result.forEach(info => {
-      if(filter(info)) {
+      if(!isOld(info)) {
         console.log("Enviando: " + info.title)
         //telegram.sendTorrentInfo(info)
       } else {
@@ -27,13 +27,15 @@ function sendNewTorrents() {
   })
 }
 
-function filter(info) {
-  return lastUpdate && info.date < lastUpdate
+function isOld(info) {
+  return lastUpdate && (info.date < lastUpdate)
 }
 
+/*
 telegram.onRequestAddTorrent = function(msg) {
   tracker.decodeMagnet(msg.data).then((magnet)=>{
     console.log("Added: " + msg.data)
     seedbox.addMagnet(magnet)
   })
 }
+*/
