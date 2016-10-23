@@ -4,17 +4,18 @@
 
 module.exports =
 {
-    defaults: {
-        seedbox: 'transmission',
-        tracker: 'elitetorrent'
-    },
-    transmission: {
-        user: "<transmission user>",
-        pass: "<transmission pass>",
-        rpc: "http://<transmission host>:<transmission port>/transmission/rpc"
-    },
-    telegram: {
-        token: '<telegram token>',
-        userId: 0 // <telegram userId>
-    }
+   seedbox: {
+      type: 'transmission',
+      user: "<transmission user>",
+      pass: "<transmission pass>",
+      rpc: "http://<transmission host>:<transmission port>/transmission/rpc"
+   },
+   tracker: {
+      type: 'elitetorrent'
+   },
+   gateway: {
+      type: 'telegram',
+      token: '<telegram token>',
+      userId: 0 // <telegram userId>
+   }
 }
