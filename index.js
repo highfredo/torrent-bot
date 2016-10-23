@@ -1,8 +1,8 @@
 var config = require('./config')
 
 var gateway = require('./lib/gateways/' + config.gateway.type)(config.gateway)
-var seedbox = require('./lib/seedboxs/' + config.seedbox.type)(config.seedbox)
-var tracker = require('./lib/trackers/' + config.tracker.type)(config.tracker)
+var seedbox = require('./lib/seedboxs/' + config.seedbox.type)(config.seedbox, gateway)
+var tracker = require('./lib/trackers/' + config.tracker.type)(config.tracker, gateway)
 
 var types = require('./lib/types')
 var _ = require('lodash')
@@ -32,9 +32,11 @@ function sendNewTorrents() {
 }
 
 
-gateway.onRequestAddTorrent = function (msg) {
-   tracker.decodeMagnet(msg.data).then((magnet)=> {
-      console.log("Added: " + msg.data)
-      seedbox.addMagnet(magnet)
-   })
-}
+gateway.onRequestAddTorrent(function (msg) {
+   tracker.decodeMagnet(msg.data)
+      .then((magnet) => {
+         console.log("Added: " + msg.data)
+         return seedbox.addMagnet(magnet)
+      })
+   }
+)
