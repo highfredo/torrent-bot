@@ -1,11 +1,15 @@
 var config = require('./config')
+var Promise = require('bluebird')
+global.Promise = Promise
 
 var gateway = require('./lib/gateways/' + config.gateway.type)(config.gateway)
 var seedbox = require('./lib/seedboxs/' + config.seedbox.type)(config.seedbox, gateway)
 var tracker = require('./lib/trackers/' + config.tracker.type)(config.tracker, gateway)
+var info    = require('./lib/info/' + config.info.type)(config.info)
 
 var types = require('./lib/types')
 var _ = require('lodash')
+global._ = _
 global.types = types
 
 sendNewTorrents()
@@ -17,15 +21,19 @@ function sendNewTorrents() {
    tracker
       .latest()
       .then(result => {
-         result.forEach(info => {
-            // TODO: filtrar en base a las preferencias de usuario
-            if (!(lastUpdate && info.date < lastUpdate)) {
-               console.log("Enviando: " + info.title)
-               gateway.sendTorrentInfo(info)
-            } else {
-               console.log(info.title + ' no ha pasado el filtro')
-            }
-         })
+         // TODO: filtrar en base a las preferencias de usuario
+         result = _.filter(result, i => !(lastUpdate && i.date < lastUpdate))
+         // result = _.filter(result, i => i.type === types.MOVIE)
+         result = _.sortBy(result, ['date']);
+
+         Promise
+            .all(_.map(result, o => info.fill(o)))
+            .then(()=>{
+               console.log(result)
+               Promise.each(result, function(info){
+                  return gateway.sendTorrentInfo(info)
+               })
+            })
 
          lastUpdate = new Date()
       })
