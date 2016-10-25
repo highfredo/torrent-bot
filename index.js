@@ -29,7 +29,7 @@ function sendNewTorrents() {
          Promise
             .all(_.map(result, o => info.fill(o)))
             .then(()=>{
-               console.log(result)
+               // console.log(result)
                Promise.each(result, function(info){
                   return gateway.sendTorrentInfo(info)
                })
