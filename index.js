@@ -16,7 +16,7 @@ global._ = _
 global.types = types
 
 sendNewTorrents()
-setInterval(sendNewTorrents, 60 * 60 * 1000) // 1h 3600000
+setInterval(sendNewTorrents, config.refreshInterval)
 
 var lastUpdate;
 function sendNewTorrents() {

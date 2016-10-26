@@ -8,6 +8,7 @@ var qualities = require('./lib/qualities')
 
 module.exports =
 {
+   refreshInterval: 60 * 60 * 1000, // En milisegundos
    filters: [ // Aplica solo los del tipo correspondiente
       {
          type: types.MOVIE,
