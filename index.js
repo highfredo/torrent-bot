@@ -7,6 +7,9 @@ var seedbox = require('./lib/seedboxs/' + config.seedbox.type)(config.seedbox, g
 var tracker = require('./lib/trackers/' + config.tracker.type)(config.tracker, gateway)
 var info    = require('./lib/info/' + config.info.type)(config.info)
 
+var filterUtils = require('./lib/filters/utils')
+const filters = filterUtils.parseFilters(config.filters)
+
 var types = require('./lib/types')
 var _ = require('lodash')
 global._ = _
@@ -21,10 +24,9 @@ function sendNewTorrents() {
    tracker
       .latest()
       .then(result => {
-         // TODO: filtrar en base a las preferencias de usuario
          result = _.filter(result, i => !(lastUpdate && i.date < lastUpdate))
-         // result = _.filter(result, i => i.type === types.MOVIE)
-         result = _.sortBy(result, ['date']);
+         result = applyFilters(result)
+         result = _.sortBy(result, ['date'])
 
          Promise
             .all(_.map(result, o => info.fill(o)))
@@ -36,6 +38,23 @@ function sendNewTorrents() {
 
          lastUpdate = new Date()
       })
+}
+
+
+function applyFilters(infoArray) {
+   return _.filter(infoArray, function (info) {
+      var filtersOfType = filters[info.type]
+
+      if(!filtersOfType) {
+         filtersOfType = filters.default
+      }
+
+      if(!filtersOfType) {
+         return true
+      }
+
+      return filterUtils.and(info, filtersOfType.filter || [])
+   })
 }
 
 
