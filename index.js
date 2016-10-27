@@ -1,19 +1,18 @@
 var config = require('./config')
-var Promise = require('bluebird')
-global.Promise = Promise
 
-var gateway = require('./lib/gateways/' + config.gateway.type)(config.gateway)
-var seedbox = require('./lib/seedboxs/' + config.seedbox.type)(config.seedbox, gateway)
-var tracker = require('./lib/trackers/' + config.tracker.type)(config.tracker, gateway)
-var info    = require('./lib/info/' + config.info.type)(config.info)
+global.Promise = require('bluebird')
+global.types = require('./lib/types')
+global._ = require('lodash')
 
-var filterUtils = require('./lib/filters/utils')
+
+const gateway = require('./lib/gateways/' + config.gateway.type)(config.gateway)
+const seedbox = require('./lib/seedboxs/' + config.seedbox.type)(config.seedbox, gateway)
+const tracker = require('./lib/trackers/' + config.tracker.type)(config.tracker, gateway)
+const info    = require('./lib/info/' + config.info.type)(config.info)
+
+const filterUtils = require('./lib/filters/utils')
 const filters = filterUtils.parseFilters(config.filters)
 
-var types = require('./lib/types')
-var _ = require('lodash')
-global._ = _
-global.types = types
 
 sendNewTorrents()
 setInterval(sendNewTorrents, config.refreshInterval)
