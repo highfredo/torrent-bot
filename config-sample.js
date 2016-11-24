@@ -40,5 +40,10 @@ module.exports =
       type: 'telegram',
       token: '<telegram token>',
       userId: 0 // <telegram userId>
+   },
+   info: {
+      type: 'trakt-tv',
+      clientId: '<trakt.tv API clientId>',
+      clientSecret: '<trakt.tv API clientSecret>'
    }
 }
