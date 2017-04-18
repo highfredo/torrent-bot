@@ -1,2 +1,2 @@
-<b>${info.title}</b> ${info.quality ? ' - '+info.quality: ''}  ${info.year ? '('+info.year+')' : ''}
+<b>${info.title}</b> ${info.year ? '('+info.year+')' : ''}
 ${info.description}
