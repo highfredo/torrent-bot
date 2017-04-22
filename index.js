@@ -21,10 +21,10 @@ let lastUpdate;
 async function sendNewTorrents() {
    console.log("BUSCANDO NUEVOS TORRENTS")
    let result = (await tracker.latest())
-   lastUpdate = new Date()
    result = _.filter(result, i => !(lastUpdate && i.date < lastUpdate))
    result = applyFilters(result)
    result = _.sortBy(result, ['date'])
+   lastUpdate = new Date()
    console.log("Enlaces encontrados que cumplen el criterio: " + result.length)
    await Promise.all(_.map(result, o => info.fill(o)))
 
