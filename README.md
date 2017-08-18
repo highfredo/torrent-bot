@@ -1,9 +1,18 @@
 # torrent-bot
 
-Esto es un bot de telegram que consulta el feed de elitetorrent y envia un mensaje con un boton de descarga
+Esto es un bot de telegram que consulta torrents en vivatorrents.com y te envia las novedades.
+También permite buscar torrents ;)
 
-## instalacion 
+## Instalación 
 
 ```
 npm install
+npm run build
+node ./dist/index.js
+```
+
+## Desarrollo
+```
+npm install
+npm start
 ```

@@ -1,1 +1,0 @@
-Descargar en ${info.quality}

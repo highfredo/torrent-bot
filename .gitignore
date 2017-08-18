@@ -1,5 +1,5 @@
 .idea
 node_modules
-config.js
-key.pem
-server.crt
+config.ts
+dist/**/*
+db.json
