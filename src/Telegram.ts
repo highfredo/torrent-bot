@@ -14,6 +14,7 @@ export class Telegram {
     if(options.webHook) {
       this.bot.setWebHook(`${options.webHook.publicUrl}/bot${options.token}`)
     }
+    this.bot.sendMessage(this.userId, 'Iniciado')
 
     this.bot.on('callback_query', (msg) => {
       if (!msg.data || msg.from.id !== this.userId) return
@@ -67,7 +68,7 @@ export class Telegram {
     PRIVATE
   */
   private buildDescription(peli: Pelicula): string {
-    return `<b>${peli.title}</b> ${peli.release_date ? '('+peli.release_date.getFullYear()+')' : ''}
+    return `<a href="${peli.trailer}">${peli.title}</a> ${peli.release_date ? '('+peli.release_date.getFullYear()+')' : ''}
 ${peli.description}`
   }
 

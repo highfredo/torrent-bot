@@ -22,6 +22,7 @@ export class Pelicula {
   release_date: Date
   photo: string
   description: string
+  trailer: string
   links: Link[]
   public hasNewLinks(): boolean {
     return !!this.links.find((l) => l.isNew === true)
@@ -32,12 +33,10 @@ export class Pelicula {
 
 export class VivaTorrent {
   private db
-  private iconv: Iconv
 
   constructor() {
     this.db = low('db.json', { storage: lowFileAsync })
     this.db.defaults({links: []}).write()
-    this.iconv = new Iconv('latin1', 'UTF-8')
   }
 
   async peliculas(): Promise<Pelicula[]> {
@@ -61,13 +60,13 @@ export class VivaTorrent {
     PRIVATE
   */
   private async fetchPeliculas(url: string): Promise<Pelicula[]> {
-    let response = await this.latin1Fetch(url)
+    let response = await this._fetch(url)
 
     let $ = Cheerio.load(response)
     let elements = $('.moviesbox:not(.more) a').toArray()
 
     let pelis_html = await Promise.all(elements.map((element) => {
-      return this.latin1Fetch(element.attribs.href)
+      return this._fetch(element.attribs.href)
     }))
 
     return pelis_html.map((html) => {
@@ -75,10 +74,9 @@ export class VivaTorrent {
     })
   }
 
-  private async latin1Fetch(url: string): Promise<string> {
+  private async _fetch(url: string): Promise<string> {
     let response = await fetch(url)
-    let buffer   = await response.buffer()
-    return this.iconv.convert(buffer).toString()
+    return response.text()
   }
 
   private parsePeliculaPage(html): Pelicula {
@@ -94,6 +92,7 @@ export class VivaTorrent {
     pelicula.release_date = new Date(release_date_parts[2], release_date_parts[1] - 1, release_date_parts[0])
     pelicula.photo = $('[itemprop="image"]').prop('src')
     pelicula.description = $('[itemprop="description"]').text()
+    pelicula.trailer = $('.trailer iframe').prop('src')
 
     pelicula.links = $('.detail_torrents span').toArray().map((element: CheerioElement, index: number) => {
       let span = $('.detail_torrents span').eq(index)
@@ -104,7 +103,7 @@ export class VivaTorrent {
       link.fuente = span.find('a.dload').text().trim()
       link.size = $(i.get(1)).text().trim()
 
-      link.url = span.find('a').first().attr('href').split(',')[2].match(/'(.*)'/)[1]
+      link.url = span.find('a').first().attr('href').split(',\'')[2].slice(0, -3)
       let linkExist = this.db.get('links').find({url: link.url}).value()
       link.isNew = !linkExist
       if(linkExist) {
